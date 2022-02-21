@@ -1,0 +1,23 @@
+Sub MoveAlerts()
+
+On Error Resume Next
+Set oOutlook = CreateObject("Outlook.Application")
+Set oNamespace = oOutlook.GetNamespace("MAPI")
+Set oFolderSrc = oNamespace.GetDefaultFolder(olFolderInbox)
+Set oFolderDst = oFolderSrc.Folders("@Alerts")
+Set oFilteredItems = oFolderSrc.Items.Restrict("[UnRead] = True")
+
+For i = oFilteredItems.Count To 1 Step -1
+      Set oMessage = oFilteredItems(i)
+      If InStr(oMessage.Subject, "high temperature") Or InStr(oMessage.Subject, "Temperature: High") Or InStr(oMessage.Subject, "Bypass not in range") Or InStr(oMessage.Subject, "A maximum temperature") Or InStr(oMessage.Subject, "RT Process Monitoring Down") Or InStr(oMessage.Subject, "high incoming line voltage") Or InStr(oMessage.Subject, "Detected an unauthorized user") Or InStr(oMessage.Subject, "low temperature") Or InStr(oMessage.Subject, "RT Down") Or InStr(oMessage.Subject, "IQAlert: Real-Time is Down") Or InStr(oMessage.Subject, "Switched Rack PDU: Communications established") Or InStr(oMessage.Subject, "Received New Issue") Then
+        oMessage.UnRead = False
+        oMessage.Move oFolderDst
+      End If
+Next
+End Sub
+
+Sub WeeklyHighlights()
+    Set temp = Application.CreateItemFromTemplate("H:\Email Templates\Weekly Highlights.msg")
+    temp.Display
+    Set temp = Nothing
+End Sub
