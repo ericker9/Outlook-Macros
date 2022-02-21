@@ -1,0 +1,17 @@
+Sub MoveHAlerts()
+
+On Error Resume Next
+Set oOutlook = CreateObject("Outlook.Application")
+Set oNamespace = oOutlook.GetNamespace("MAPI")
+Set oFolderSrc = oNamespace.GetDefaultFolder(olFolderInbox)
+Set oFolderDst = oFolderSrc.Folders("@Alerts")
+Set oFilteredItems = oFolderSrc.Items.Restrict("[UnRead] = False")
+
+For i = oFilteredItems.Count To 1 Step -1
+      Set oMessage = oFilteredItems(i)
+      If InStr(oMessage.Subject, "New Email Received From") Or InStr(oMessage.Subject, "New Incident Assigned") Or InStr(oMessage.Subject, "New Status Update") Then
+        oMessage.UnRead = False
+        oMessage.Move oFolderDst
+      End If
+Next
+End Sub
